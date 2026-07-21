@@ -105,6 +105,8 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 500; line-height: 1.
 
 .chip .byline { color: var(--ink-muted); }
 
+.cover { width: 100%; max-width: 100%; height: auto; border-radius: 2px; margin: 0 0 40px; display: block; }
+
 article p { margin-bottom: 1.35em; }
 
 article h2 { font-size: 26px; margin: 2em 0 0.8em; }
