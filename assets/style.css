@@ -1,0 +1,188 @@
+:root {
+  --navy: #1A2B56;
+  --navy-deep: #0F1B3C;
+  --navy-soft: #2A3D6E;
+  --gold: #BFA169;
+  --gold-deep: #9A7F4C;
+  --gold-soft: #E3D3AE;
+  --ink: #121212;
+  --ink-muted: #2F2F31;
+  --slate: #636971;
+  --slate-soft: #9AA0A8;
+  --slate-line: #D7DAE0;
+  --paper: #FFFFFF;
+  --paper-warm: #FAF8F3;
+  --paper-cool: #F4F5F7;
+  --font-serif: "Tiempos Text", Georgia, "Times New Roman", serif;
+  --font-display: "Tiempos Headline", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter Tight", -apple-system, system-ui, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { font-size: 18px; }
+
+body {
+  font-family: var(--font-serif);
+  color: var(--ink);
+  background: var(--paper-warm);
+  line-height: 1.6;
+}
+
+.sheet {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 56px 20px 96px;
+  background: var(--paper);
+  min-height: 100vh;
+}
+
+@media (min-width: 900px) {
+  .sheet { padding: 72px 56px 128px; }
+}
+
+/* Masthead */
+.masthead { text-align: center; padding-bottom: 28px; border-bottom: 1px solid var(--gold); }
+
+.masthead a { text-decoration: none; }
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 40px;
+  letter-spacing: 0.18em;
+  color: var(--navy);
+  text-transform: uppercase;
+}
+
+.masthead .desc {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin-top: 10px;
+}
+
+nav.utama {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--slate-line);
+  margin-bottom: 48px;
+}
+
+nav.utama a { color: var(--ink); text-decoration: none; margin: 0 14px; }
+nav.utama a:hover { color: var(--gold-deep); }
+
+/* Prose */
+main { max-width: 720px; margin: 0 auto; }
+
+a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; transition: color 240ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+a:hover { color: var(--gold-deep); }
+
+h1, h2, h3 { font-family: var(--font-display); font-weight: 500; line-height: 1.18; color: var(--ink); }
+
+.artikel-tajuk {
+  font-size: clamp(32px, 5vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  margin-bottom: 18px;
+}
+
+.chip {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin-bottom: 40px;
+}
+
+.chip .byline { color: var(--ink-muted); }
+
+article p { margin-bottom: 1.35em; }
+
+article h2 { font-size: 26px; margin: 2em 0 0.8em; }
+
+article blockquote {
+  border-left: 2px solid var(--gold);
+  padding-left: 20px;
+  font-style: italic;
+  color: var(--ink-muted);
+  margin: 1.5em 0;
+}
+
+.drop::first-letter {
+  font-family: var(--font-display);
+  font-size: 4.2em;
+  line-height: 0.85;
+  color: var(--gold);
+  float: left;
+  padding-right: 10px;
+  padding-top: 4px;
+}
+
+/* Sources */
+.sumber { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--gold); }
+.sumber h2 {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin: 0 0 14px;
+}
+.sumber ol { padding-left: 20px; font-size: 16px; color: var(--ink-muted); }
+.sumber li { margin-bottom: 6px; }
+
+/* Index list */
+.senarai { list-style: none; }
+.senarai li { padding: 28px 0; border-bottom: 1px solid var(--slate-line); }
+.senarai .tajuk {
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+}
+.senarai .tajuk a { text-decoration: none; color: var(--navy); }
+.senarai .tajuk a:hover { color: var(--gold-deep); }
+.senarai .tarikh {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate-soft);
+  margin-bottom: 8px;
+}
+.senarai .petikan { color: var(--ink-muted); margin-top: 10px; font-size: 17px; }
+
+/* Footer */
+footer.tapak {
+  margin-top: 96px;
+  padding-top: 24px;
+  border-top: 1px solid var(--gold);
+  text-align: center;
+}
+footer.tapak .wordmark { font-size: 16px; }
+footer.tapak .penasihat {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--slate);
+  font-size: 15px;
+  margin-top: 8px;
+}
+footer.tapak .kecil {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate-soft);
+  margin-top: 16px;
+}
+footer.tapak .kecil a { color: var(--slate-soft); }
