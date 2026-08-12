@@ -1,0 +1,197 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>cover</title>
+<style>
+  /* ---- themes -------------------------------------------------------- */
+  :root[data-theme="nisi"] {
+    --ground:   #F7F4EC;   /* rice paper */
+    --ink:      #1C1C1C;
+    --ink-soft: #55524A;
+    --accent:   #2F4A8A;   /* indigo */
+    --hair:     #C9C2AE;
+    --motif:    #2F4A8A;
+    --motif-op: 0.13;
+    --font-title: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+    --font-body:  "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+    --font-kicker:"Noto Sans SC", "PingFang SC", "Helvetica Neue", sans-serif;
+    --title-size: 96px;
+    --title-weight: 600;
+    --title-spacing: 0.04em;
+    --kicker-spacing: 0.36em;
+  }
+  :root[data-theme="wartawan"] {
+    --ground:   #1A2B56;   /* navy */
+    --ink:      #F4F1E8;
+    --ink-soft: #CFCABA;
+    --accent:   #BFA169;   /* gold */
+    --hair:     #6B7A9E;
+    --motif:    #8FA0C4;
+    --motif-op: 0.30;
+    --font-title: "Playfair Display", "Didot", "Hoefler Text", Georgia, serif;
+    --font-body:  "Playfair Display", "Didot", "Hoefler Text", Georgia, serif;
+    --font-kicker:"Helvetica Neue", Arial, sans-serif;
+    --title-size: 82px;
+    --title-weight: 700;
+    --title-spacing: -0.005em;
+    --kicker-spacing: 0.30em;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1280px; height: 720px; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  .frame {
+    position: absolute;
+    inset: 46px;
+    border: 1px solid var(--hair);
+    padding: 56px 62px 46px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---- motif (upper right, clear of the headline and the footer) ------- */
+  .motif {
+    position: absolute;
+    right: 96px;
+    top: 168px;
+    width: 268px;
+    height: 268px;
+    opacity: var(--motif-op);
+    color: var(--motif);
+    pointer-events: none;
+  }
+  .motif svg { width: 100%; height: 100%; display: block; }
+
+  /* ---- kicker --------------------------------------------------------- */
+  .kicker {
+    font-family: var(--font-kicker);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: var(--kicker-spacing);
+    color: var(--accent);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  :root[data-theme="nisi"] .kicker { text-transform: none; font-size: 21px; font-weight: 500; }
+  .kicker span { opacity: 0.55; margin: 0 10px; letter-spacing: 0; }
+
+  /* ---- headline ------------------------------------------------------- */
+  .title {
+    margin-top: 30px;
+    font-family: var(--font-title);
+    font-size: var(--title-size);
+    font-weight: var(--title-weight);
+    letter-spacing: var(--title-spacing);
+    line-height: 1.1;
+    max-width: 74%;
+    position: relative;
+  }
+  .title .l2 { color: var(--accent); }
+  :root[data-theme="wartawan"] .title .l2 { font-style: italic; }
+
+  .rule {
+    margin-top: 30px;
+    width: 152px;
+    height: 2px;
+    background: var(--accent);
+    flex: 0 0 auto;
+  }
+
+  /* ---- standfirst ----------------------------------------------------- */
+  .stand {
+    margin-top: 26px;
+    font-size: 26px;
+    line-height: 1.66;
+    color: var(--ink-soft);
+    max-width: 66%;
+    position: relative;
+  }
+  :root[data-theme="wartawan"] .stand { font-style: italic; }
+
+  /* ---- footer --------------------------------------------------------- */
+  .foot {
+    margin-top: auto;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    position: relative;
+  }
+  .byline { font-size: 25px; font-weight: 700; letter-spacing: 0.02em; }
+  .byline .dot { color: var(--accent); }
+  /* a full stop after a Chinese pen name reads as a typo — use a seal mark */
+  :root[data-theme="nisi"] .byline { letter-spacing: 0.14em; }
+  :root[data-theme="nisi"] .byline .dot { font-size: 0; }
+  :root[data-theme="nisi"] .byline .dot::after {
+    content: ""; display: inline-block;
+    width: 9px; height: 9px; background: var(--accent);
+    margin-left: 4px; vertical-align: 3px;
+  }
+  .date {
+    font-family: var(--font-kicker);
+    font-size: 19px;
+    letter-spacing: 0.20em;
+    color: var(--ink-soft);
+  }
+  :root[data-theme="nisi"] .date { letter-spacing: 0.10em; }
+
+  /* long-headline guards: set by the renderer */
+  body[data-len="long"]  .title { font-size: calc(var(--title-size) * 0.80); }
+  body[data-len="xlong"] .title { font-size: calc(var(--title-size) * 0.66); }
+</style>
+
+<div class="frame">
+  <div class="kicker" id="kicker"></div>
+  <h1 class="title"><span class="l1" id="l1"></span><br><span class="l2" id="l2"></span></h1>
+  <div class="rule"></div>
+  <p class="stand" id="stand"></p>
+  <div class="foot">
+    <div class="byline" id="byline"></div>
+    <div class="date" id="date"></div>
+  </div>
+</div>
+<div class="motif" id="motif"></div>
+
+<script>
+  const MOTIFS = {
+    bars: '<svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3"><rect x="14" y="118" width="44" height="62"/><rect x="76" y="74" width="44" height="106"/><rect x="138" y="30" width="44" height="150"/><line x1="6" y1="180" x2="194" y2="180"/></svg>',
+    scales: '<svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3"><line x1="100" y1="26" x2="100" y2="168"/><line x1="34" y1="52" x2="166" y2="52"/><circle cx="100" cy="26" r="7"/><path d="M34 52 L10 108 h48 Z"/><path d="M166 52 L142 108 h48 Z"/><line x1="62" y1="176" x2="138" y2="176"/></svg>',
+    doc: '<svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3"><path d="M44 16 h84 l30 30 v138 h-114 Z"/><path d="M128 16 v30 h30"/><line x1="66" y1="80" x2="136" y2="80"/><line x1="66" y1="106" x2="136" y2="106"/><line x1="66" y1="132" x2="110" y2="132"/></svg>',
+    ballot: '<svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3"><rect x="18" y="86" width="164" height="96"/><path d="M62 86 V30 h76 v56"/><line x1="74" y1="112" x2="126" y2="112"/><path d="M82 56 l14 14 l26 -28"/></svg>',
+    ceiling: '<svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3"><line x1="8" y1="38" x2="192" y2="38"/><path d="M100 176 V72"/><path d="M76 96 l24 -24 l24 24"/><line x1="40" y1="176" x2="160" y2="176"/></svg>',
+    none: ''
+  };
+  const p = new URLSearchParams(location.search);
+  const set = (id, v) => { document.getElementById(id).textContent = v || ''; };
+
+  document.documentElement.dataset.theme = p.get('theme') || 'wartawan';
+
+  const kick = (p.get('kicker') || '').split('|').filter(Boolean);
+  document.getElementById('kicker').innerHTML =
+    kick.map(k => `<b style="font-weight:inherit">${k}</b>`).join('<span>·</span>');
+
+  const l1 = p.get('l1') || '', l2 = p.get('l2') || '';
+  set('l1', l1); set('l2', l2);
+  if (!l2) document.querySelector('.title br').remove();
+
+  set('stand', p.get('stand'));
+  set('date', p.get('date'));
+
+  const by = p.get('byline') || '';
+  document.getElementById('byline').innerHTML = by
+    ? `${by}<span class="dot">.</span>` : '';
+
+  document.getElementById('motif').innerHTML = MOTIFS[p.get('motif') || 'none'] || '';
+
+  // shrink the headline when it would otherwise overrun the motif
+  const longest = Math.max(l1.length, l2.length);
+  const cjk = /[一-鿿]/.test(l1 + l2);
+  const limit = cjk ? [8, 11] : [16, 22];
+  document.body.dataset.len =
+    longest > limit[1] ? 'xlong' : longest > limit[0] ? 'long' : 'normal';
+</script>
