@@ -44,7 +44,38 @@
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     overflow: hidden;
+    position: relative;
   }
+
+  /* ---- generated background + scrim ----------------------------------- */
+  /* The image carries the mood; the scrim guarantees the type still reads. */
+  .bg {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    display: none;
+  }
+  .scrim { position: absolute; inset: 0; display: none; }
+  body[data-bg="1"] .bg, body[data-bg="1"] .scrim { display: block; }
+
+  :root[data-theme="wartawan"] .bg { filter: saturate(0.75) contrast(1.05); }
+  :root[data-theme="wartawan"] .scrim {
+    background:
+      linear-gradient(100deg, rgba(16,27,56,0.92) 0%, rgba(16,27,56,0.78) 38%,
+                              rgba(16,27,56,0.30) 66%, rgba(16,27,56,0.10) 100%),
+      linear-gradient(to top, rgba(16,27,56,0.70) 0%, rgba(16,27,56,0) 34%);
+  }
+  :root[data-theme="nisi"] .bg { filter: saturate(0.62) contrast(1.02) brightness(1.06); }
+  :root[data-theme="nisi"] .scrim {
+    background:
+      linear-gradient(100deg, rgba(247,244,236,0.94) 0%, rgba(247,244,236,0.82) 40%,
+                              rgba(247,244,236,0.34) 68%, rgba(247,244,236,0.12) 100%),
+      linear-gradient(to top, rgba(247,244,236,0.74) 0%, rgba(247,244,236,0) 32%);
+  }
+
+  /* with a photo behind, the motif is noise — drop it */
+  body[data-bg="1"] .motif { display: none; }
+  body[data-bg="1"] .title { max-width: 66%; }
+  body[data-bg="1"] .stand { max-width: 58%; }
 
   .frame {
     position: absolute;
@@ -145,6 +176,9 @@
   body[data-len="xlong"] .title { font-size: calc(var(--title-size) * 0.66); }
 </style>
 
+<div class="bg" id="bg"></div>
+<div class="scrim"></div>
+
 <div class="frame">
   <div class="kicker" id="kicker"></div>
   <h1 class="title"><span class="l1" id="l1"></span><br><span class="l2" id="l2"></span></h1>
@@ -187,6 +221,12 @@
     ? `${by}<span class="dot">.</span>` : '';
 
   document.getElementById('motif').innerHTML = MOTIFS[p.get('motif') || 'none'] || '';
+
+  const bg = p.get('bg');
+  if (bg) {
+    document.getElementById('bg').style.backgroundImage = `url("${bg}")`;
+    document.body.dataset.bg = '1';
+  }
 
   // shrink the headline when it would otherwise overrun the motif
   const longest = Math.max(l1.length, l2.length);
