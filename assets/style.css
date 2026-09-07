@@ -238,3 +238,10 @@ footer.tapak .kecil a { color: var(--slate-soft); }
   .senarai .tajuk { font-size: 26px; }
   .senarai li { padding: 30px 0; }
 }
+
+/* Panduan series navigation and Renungan link (v3.0, Sept 2026) */
+.siri-nav { margin: 40px 0 8px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,.12); }
+.siri-nav p { margin: 6px 0; }
+.renungan-pautan { margin: 28px 0 0; padding: 18px 20px; border-left: 3px solid #b8955a; background: rgba(184,149,90,.07); }
+.renungan-pautan .tajuk { margin: 4px 0; }
+article.renungan .artikel-tajuk { font-style: italic; }
