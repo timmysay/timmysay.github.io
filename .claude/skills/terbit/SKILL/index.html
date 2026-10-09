@@ -1,0 +1,154 @@
+<h1>/terbit</h1>
+<p>Timmy wrote the piece. Publish it as he wrote it. Run the steps in order. Run all commands from the timmy-say repo root unless a step says otherwise.</p>
+<p>If the message is <code>/terbit retry &lt;url&gt;</code>, go to the Retry section.</p>
+<h2>Procedure</h2>
+<ol start="0">
+<li>
+<p>Preflight.</p>
+<ul>
+<li>Test each of <code>ARTICLE_PAGE_ID</code>, <code>ARTICLE_PAGE_TOKEN</code>, <code>GH_TOKEN</code> with <code>[ -n &quot;$VAR&quot; ]</code>. Never print a value.</li>
+<li>If one is missing, stop. Tell Timmy which one. Tell him to start the session in the <code>small-hours</code> environment.</li>
+<li>If <code>../instagram-autopost</code> does not exist, clone it. Put the token in a header, never in the URL:
+<code>git -c http.https://github.com/.extraheader=&quot;AUTHORIZATION: basic $(printf 'x-access-token:%s' &quot;$GH_TOKEN&quot; | base64 | tr -d '\n')&quot; clone https://github.com/timmysay/instagram-autopost ../instagram-autopost</code></li>
+<li>If <code>python3 -c &quot;import requests&quot;</code> fails, run <code>pip install -r ../instagram-autopost/requirements.txt</code>.</li>
+</ul>
+</li>
+<li>
+<p>Parse the message.</p>
+<ul>
+<li>Remove the <code>/terbit</code> or <code>Terbit:</code> prefix.</li>
+<li>Read the optional header lines at the top. Each header is on its own line: <code>Tajuk: &lt;title&gt;</code>, <code>Jenis: artikel</code> or <code>Jenis: renungan</code>.</li>
+<li>Remove the header lines from the body.</li>
+<li>Use <code>renungan</code> when no <code>Jenis:</code> line is present.</li>
+<li>Use the <code>Tajuk:</code> value as the title when present.</li>
+<li>If there is no <code>Tajuk:</code>, use the first line when it has 70 characters or fewer and no final full stop. Then remove that line from the body.</li>
+<li>Otherwise, use the first sentence. Cut it to 70 characters at a word boundary. Keep the sentence in the body.</li>
+<li>Tell Timmy the title you chose.</li>
+</ul>
+</li>
+<li>
+<p>Clean. Never edit.</p>
+<ul>
+<li>Site text: remove only the <code>_INVISIBLE</code>, <code>_ODD_SPACE</code> and <code>_CITATION</code> patterns from <code>../instagram-autopost/scripts/common.py</code>. Import them. Do not copy them.</li>
+<li>Keep his <code>Sumber:</code> lines. Keep all other text exactly.</li>
+<li>Facebook text: apply <code>clean()</code> from the same file to the original body.</li>
+<li>Count the matches each pattern removed. Keep the counts for the report.</li>
+<li>Do not fix spelling, wording, order or length.</li>
+<li>Read the &quot;Peraturan tetap&quot; section of <code>README.md</code>. The <code>/terbit</code> message is Timmy's approval.</li>
+<li>If the piece breaks a rule there, do not publish. Quote the rule and the sentence. Ask Timmy.</li>
+</ul>
+</li>
+<li>
+<p>Make the slug.</p>
+<ul>
+<li>Run <code>python3 scripts/slug.py &quot;&lt;title&gt;&quot;</code>.</li>
+<li>If <code>renungan/&lt;slug&gt;.md</code> or <code>articles/&lt;slug&gt;.md</code> exists, append <code>-2</code>. Then try <code>-3</code>, and so on.</li>
+</ul>
+</li>
+<li>
+<p>Write the file.</p>
+<ul>
+<li>Get the date with <code>TZ=Asia/Kuala_Lumpur date +%Y-%m-%dT%H:%M:%S+08:00</code>.</li>
+<li>Set <code>petikan</code> to the first sentence of the body, 160 characters max.</li>
+<li>Put <code>title</code> and <code>petikan</code> in double quotes if they contain <code>:</code> or <code>#</code> or start with a quote.</li>
+<li>Split the body into paragraphs at blank lines. Separate paragraphs with one blank line.</li>
+<li>renungan: write <code>renungan/&lt;slug&gt;.md</code>.
+<ul>
+<li>Frontmatter: <code>title</code>, <code>date</code>, <code>petikan</code>, <code>jenis: renungan</code>.</li>
+<li>Wrap the first paragraph in <code>&lt;p class=&quot;drop&quot;&gt;…&lt;/p&gt;</code>. Leave later paragraphs as plain text.</li>
+<li>Match the shape of <code>renungan/ambang-dan-udara.md</code> exactly.</li>
+</ul>
+</li>
+<li>artikel: write <code>articles/&lt;slug&gt;.md</code>.
+<ul>
+<li>Frontmatter: <code>title</code>, <code>date</code>, <code>petikan</code>, <code>jenis: tulisan</code>, <code>cover: /assets/covers/&lt;slug&gt;.png</code>.</li>
+<li>Wrap every paragraph in <code>&lt;p&gt;…&lt;/p&gt;</code>. Make the first one <code>&lt;p class=&quot;drop&quot;&gt;</code>.</li>
+<li>Make the cover with the <code>scripts/cover/</code> pipeline:
+<ol>
+<li><code>python3 scripts/cover/make-bg.py --slug &lt;slug&gt; --brief &quot;&lt;one concrete image from the piece&gt;&quot;</code></li>
+<li><code>python3 scripts/cover/strip-marks.py assets/covers/bg/&lt;slug&gt;.png</code></li>
+<li><code>CHROME=$(bash scripts/cover/ensure-chrome.sh)</code></li>
+<li><code>node scripts/cover/make-cover.mjs --theme wartawan --slug &lt;slug&gt; --chrome &quot;$CHROME&quot; --bg &quot;assets/covers/bg/&lt;slug&gt;.png&quot; --kicker &quot;TULISAN|&lt;TOPIK&gt;&quot; --l1 &quot;&lt;title part 1&gt;&quot; --l2 &quot;&lt;title part 2&gt;&quot; --stand &quot;&lt;his first sentence&gt;&quot; --byline &quot;Timmy Say&quot; --date &quot;&lt;10 OKTOBER 2026&gt;&quot; --motif none</code></li>
+</ol>
+</li>
+<li>Keep <code>--l1</code> and <code>--l2</code> under about 22 characters each. Use his words only.</li>
+<li>If any cover step fails, remove the <code>cover:</code> line. Publish anyway. Say so in the report.</li>
+<li>SynthID can stay in the pixels after the strip. Say so in the report.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Lint.</p>
+<ul>
+<li>Run <code>scripts/lint-artikel.sh &lt;file&gt;</code>.</li>
+<li>If it finds a hit, show the lines. Stop.</li>
+</ul>
+</li>
+<li>
+<p>Commit and push.</p>
+<ul>
+<li><code>git add</code> the file and the cover files if made.</li>
+<li>Commit with the message <code>terbit: &lt;slug&gt;</code> and the line <code>Co-Authored-By: Claude &lt;noreply@anthropic.com&gt;</code>.</li>
+<li>Run <code>git push origin main</code>.</li>
+</ul>
+</li>
+<li>
+<p>Wait for the page.</p>
+<ul>
+<li>renungan URL: <code>https://timmysay.github.io/renungan/&lt;slug&gt;/</code></li>
+<li>artikel URL: <code>https://timmysay.github.io/artikel/&lt;slug&gt;/</code>. Artikel pages live under <code>/artikel/</code>, not <code>/articles/</code>.</li>
+<li>Poll with <code>curl -s -o /dev/null -w '%{http_code}' &lt;url&gt;</code> every 20 seconds. Stop at 200. Stop after 8 minutes.</li>
+<li>If you get no 200, run <code>gh workflow run pages.yml</code> one time. Wait 8 more minutes the same way.</li>
+<li>If you still get no 200, report the failure. Do not post to Facebook.</li>
+<li>When you get 200, run <code>scripts/indexnow-ping.sh &lt;url&gt;</code>.</li>
+</ul>
+</li>
+<li>
+<p>Post to Facebook.</p>
+<ul>
+<li>Search <code>../instagram-autopost/data/articles.jsonl</code> for the URL. If the URL is there, stop. One post per piece, ever.</li>
+<li>Build the message: title, a blank line, the full Facebook-cleaned body, a blank line, <code>Baca di laman: &lt;url&gt;</code>.</li>
+<li>Write the message to a temp file.</li>
+<li>In <code>../instagram-autopost</code>, run <code>python3 scripts/post_text.py &quot;&lt;url&gt;&quot; &lt; &lt;temp file&gt;</code>.</li>
+<li>Keep the post id it prints.</li>
+</ul>
+</li>
+<li>
+<p>Record.</p>
+<ul>
+<li>Append one line to <code>../instagram-autopost/data/articles.jsonl</code>:
+<code>{&quot;date&quot;: &quot;&lt;YYYY-MM-DD&gt;&quot;, &quot;title&quot;: &quot;&lt;title&gt;&quot;, &quot;url&quot;: &quot;&lt;url&gt;&quot;, &quot;post_id&quot;: &quot;&lt;id&gt;&quot;}</code></li>
+<li>In <code>../instagram-autopost</code>, set the git identity if it is not set.</li>
+<li>Run <code>git add data/articles.jsonl &amp;&amp; git commit -m &quot;article &lt;date&gt;&quot; &amp;&amp; git push origin HEAD:master</code>.</li>
+<li>This line stops the 08:00 morning routine from posting the same piece again.</li>
+</ul>
+</li>
+<li>
+<p>Report in chat, five lines or fewer:</p>
+<ul>
+<li>site URL</li>
+<li>Facebook post id</li>
+<li>title and slug</li>
+<li>what the clean step removed, as counts</li>
+<li>cover status, for artikel only</li>
+</ul>
+</li>
+</ol>
+<h2>Retry</h2>
+<p>Use this when the message is <code>/terbit retry &lt;url&gt;</code>.</p>
+<ol>
+<li>Run step 0.</li>
+<li>Get the slug from the URL. Read the file for that slug in <code>renungan/</code> or <code>articles/</code>.</li>
+<li>Use its <code>title</code>. Use its body with the <code>&lt;p&gt;</code> tags removed as the body.</li>
+<li>Check that the URL returns 200.</li>
+<li>Go to step 8.</li>
+</ol>
+<h2>Hard rules</h2>
+<ul>
+<li>Never rewrite his words.</li>
+<li>One Facebook post per piece. The ledger <code>data/articles.jsonl</code> is the source of truth.</li>
+<li>Never post to the Instagram account. Never post to The Small Hours page.</li>
+<li>Never print a token value.</li>
+<li>If a step after the push fails, name that step exactly. Tell Timmy the page is live. Tell him to retry the Facebook step with <code>/terbit retry &lt;url&gt;</code>.</li>
+</ul>
